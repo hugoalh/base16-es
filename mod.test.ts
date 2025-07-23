@@ -45,6 +45,12 @@ Deno.test("Direct 9", { permissions: "none" }, async (t) => {
 Deno.test("Direct 10", { permissions: "none" }, async (t) => {
 	await testerDirect(t, "Many hands make light work.", "4D616E792068616E6473206D616B65206C6967687420776F726B2E");
 });
+Deno.test("Direct 11", { permissions: "none" }, async (t) => {
+	await testerDirect(t, "Hello world!", "48656C6C6F20776F726C6421");
+});
+Deno.test("Direct 12", { permissions: "none" }, async (t) => {
+	await testerDirect(t, Uint8Array.from([0xDE, 0xAD, 0xBE, 0xEF]), "DEADBEEF");
+});
 Deno.test("Stream 1", {
 	permissions: {
 		read: true
