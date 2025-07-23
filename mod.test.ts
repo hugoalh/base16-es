@@ -63,42 +63,42 @@ Deno.test("Stream 1", {
 	const encodedStream = (await Array.fromAsync(file.readable.pipeThrough(new Base16EncoderStream()).pipeThrough(new TextDecoderStream()).values())).join("");
 	deepStrictEqual(encodedDirect, encodedStream);
 });
-Deno.test("Throw 1", { permissions: "none" }, (t) => {
+Deno.test("Throw 1", { permissions: "none" }, () => {
 	throws(() => {
 		new Base16Decoder().decodeToText("0");
 	});
 });
-Deno.test("Throw 2", { permissions: "none" }, (t) => {
+Deno.test("Throw 2", { permissions: "none" }, () => {
 	throws(() => {
 		new Base16Decoder().decodeToText("zd4aa");
 	});
 });
-Deno.test("Throw 3", { permissions: "none" }, (t) => {
+Deno.test("Throw 3", { permissions: "none" }, () => {
 	throws(() => {
 		new Base16Decoder().decodeToText("d4az");
 	});
 });
-Deno.test("Throw 4", { permissions: "none" }, (t) => {
+Deno.test("Throw 4", { permissions: "none" }, () => {
 	throws(() => {
 		new Base16Decoder().decodeToText("30313");
 	});
 });
-Deno.test("Throw 5", { permissions: "none" }, (t) => {
+Deno.test("Throw 5", { permissions: "none" }, () => {
 	throws(() => {
 		new Base16Decoder().decodeToText("0g");
 	});
 });
-Deno.test("Throw 6", { permissions: "none" }, (t) => {
+Deno.test("Throw 6", { permissions: "none" }, () => {
 	throws(() => {
 		new Base16Decoder().decodeToText("00gg");
 	});
 });
-Deno.test("Throw 7", { permissions: "none" }, (t) => {
+Deno.test("Throw 7", { permissions: "none" }, () => {
 	throws(() => {
 		new Base16Decoder().decodeToText("0\x01");
 	});
 });
-Deno.test("Throw 8", { permissions: "none" }, (t) => {
+Deno.test("Throw 8", { permissions: "none" }, () => {
 	throws(() => {
 		new Base16Decoder().decodeToText("ffeed");
 	});
