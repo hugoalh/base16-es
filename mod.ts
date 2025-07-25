@@ -77,26 +77,24 @@ export class Base16DecoderStream extends TransformStream<Uint8Array, Uint8Array>
 	 * Initialize.
 	 */
 	constructor() {
-		const transform: TransformerTransformCallback<Uint8Array, Uint8Array> = (chunkStream: Uint8Array, controller: TransformStreamDefaultController<Uint8Array>): void => {
-			this.#bin.push(...Array.from(chunkStream));
-			if (this.#bin.length >= 2) {
+		super({
+			transform: (chunkStream: Uint8Array, controller: TransformStreamDefaultController<Uint8Array>): void => {
+				this.#bin.push(...Array.from(chunkStream));
+				if (this.#bin.length >= 2) {
+					try {
+						controller.enqueue(this.#base16Decoder.decodeToBytes(Uint8Array.from(this.#bin.splice(0, Math.floor(this.#bin.length / 2) * 2))));
+					} catch (error) {
+						controller.error(error);
+					}
+				}
+			},
+			flush: (controller: TransformStreamDefaultController<Uint8Array>): void => {
 				try {
-					controller.enqueue(this.#base16Decoder.decodeToBytes(Uint8Array.from(this.#bin.splice(0, Math.floor(this.#bin.length / 2) * 2))));
+					controller.enqueue(this.#base16Decoder.decodeToBytes(Uint8Array.from(this.#bin.splice(0, this.#bin.length))));
 				} catch (error) {
 					controller.error(error);
 				}
 			}
-		};
-		const flush: TransformerFlushCallback<Uint8Array> = (controller: TransformStreamDefaultController<Uint8Array>): void => {
-			try {
-				controller.enqueue(this.#base16Decoder.decodeToBytes(Uint8Array.from(this.#bin.splice(0, this.#bin.length))));
-			} catch (error) {
-				controller.error(error);
-			}
-		};
-		super({
-			transform,
-			flush
 		});
 		this.#base16Decoder = new Base16Decoder();
 	}
@@ -113,14 +111,15 @@ export class Base16EncoderStream extends TransformStream<Uint8Array, Uint8Array>
 	 * Initialize.
 	 */
 	constructor() {
-		const transform: TransformerTransformCallback<Uint8Array, Uint8Array> = (chunkStream: Uint8Array, controller: TransformStreamDefaultController<Uint8Array>): void => {
-			try {
-				controller.enqueue(this.#base16Encoder.encodeToBytes(chunkStream));
-			} catch (error) {
-				controller.error(error);
+		super({
+			transform: (chunkStream: Uint8Array, controller: TransformStreamDefaultController<Uint8Array>): void => {
+				try {
+					controller.enqueue(this.#base16Encoder.encodeToBytes(chunkStream));
+				} catch (error) {
+					controller.error(error);
+				}
 			}
-		};
-		super({ transform });
+		});
 		this.#base16Encoder = new Base16Encoder();
 	}
 }

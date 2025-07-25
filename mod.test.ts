@@ -4,6 +4,7 @@ import {
 } from "node:assert";
 import {
 	Base16Decoder,
+	Base16DecoderStream,
 	Base16Encoder,
 	Base16EncoderStream
 } from "./mod.ts";
@@ -51,17 +52,46 @@ Deno.test("Direct 11", { permissions: "none" }, async (t) => {
 Deno.test("Direct 12", { permissions: "none" }, async (t) => {
 	await testerDirect(t, Uint8Array.from([0xDE, 0xAD, 0xBE, 0xEF]), "DEADBEEF");
 });
+async function testerStream(t: Deno.TestContext, filePath: string): Promise<void> {
+	const sampleText = await Deno.readTextFile(filePath);
+	const encodedDirect = new Base16Encoder().encodeToText(sampleText);
+	await using sampleFile = await Deno.open(filePath);
+	const encodedStream = sampleFile.readable.pipeThrough(new Base16EncoderStream());
+	const encodedStreamTee = encodedStream.tee();
+	const encodedStreamVisual = (await Array.fromAsync(encodedStreamTee[0].pipeThrough(new TextDecoderStream()).values())).join("");
+	await t.step("Encode", () => {
+		deepStrictEqual(encodedDirect, encodedStreamVisual);
+	});
+	const decodedDirect = new Base16Decoder().decodeToText(encodedDirect);
+	await t.step("Decode Direct", () => {
+		deepStrictEqual(sampleText, decodedDirect);
+	});
+	const decodedStream = encodedStreamTee[1].pipeThrough(new Base16DecoderStream());
+	const decodedStreamVisual = (await Array.fromAsync(decodedStream.pipeThrough(new TextDecoderStream()).values())).join("");
+	await t.step("Decode Stream", () => {
+		deepStrictEqual(sampleText, decodedStreamVisual);
+	});
+}
 Deno.test("Stream 1", {
 	permissions: {
 		read: true
 	}
-}, async () => {
-	const sampleFilePath = "./README.md";
-	const sampleText = await Deno.readTextFile(sampleFilePath);
-	const encodedDirect = new Base16Encoder().encodeToText(sampleText);
-	await using file = await Deno.open(sampleFilePath);
-	const encodedStream = (await Array.fromAsync(file.readable.pipeThrough(new Base16EncoderStream()).pipeThrough(new TextDecoderStream()).values())).join("");
-	deepStrictEqual(encodedDirect, encodedStream);
+}, async (t) => {
+	await testerStream(t, "./LICENSE.md");
+});
+Deno.test("Stream 2", {
+	permissions: {
+		read: true
+	}
+}, async (t) => {
+	await testerStream(t, "./README.md");
+});
+Deno.test("Stream 3", {
+	permissions: {
+		read: true
+	}
+}, async (t) => {
+	await testerStream(t, "./deno.jsonc");
 });
 Deno.test("Throw 1", { permissions: "none" }, () => {
 	throws(() => {
