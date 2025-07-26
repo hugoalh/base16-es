@@ -58,23 +58,23 @@ An ECMAScript (JavaScript & TypeScript) module for Base16 encode and decode.
 ## 🧩 APIs
 
 - ```ts
-   class Base16Decoder {
+  class Base16Decoder {
     decodeToBytes(item: string | Uint8Array): Uint8Array;
     decodeToText(item: string | Uint8Array): string;
   }
   ```
 - ```ts
-   class Base16Encoder {
+  class Base16Encoder {
     encodeToBytes(item: string | Uint8Array): Uint8Array;
     encodeToText(item: string | Uint8Array): string;
   }
   ```
 - ```ts
-   class Base16DecoderStream extends TransformStream<Uint8Array, Uint8Array> {
+  class Base16DecoderStream extends TransformStream<Uint8Array, Uint8Array> {
   }
   ```
 - ```ts
-   class Base16EncoderStream extends TransformStream<Uint8Array, Uint8Array> {
+  class Base16EncoderStream extends TransformStream<Uint8Array, Uint8Array> {
   }
   ```
 
