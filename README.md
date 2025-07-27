@@ -10,7 +10,7 @@ An ECMAScript (JavaScript & TypeScript) module for Base16 encode and decode.
 
 ## 🌟 Features
 
-- Support encode and decode in stream.
+- Support stream encode and decode.
 
 ## 🔰 Begin
 
