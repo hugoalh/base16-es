@@ -78,8 +78,8 @@ export class Base16DecoderStream extends TransformStream<Uint8Array, Uint8Array>
 	 */
 	constructor() {
 		super({
-			transform: (chunkStream: Uint8Array, controller: TransformStreamDefaultController<Uint8Array>): void => {
-				this.#bin.push(...Array.from(chunkStream));
+			transform: (chunk: Uint8Array, controller: TransformStreamDefaultController<Uint8Array>): void => {
+				this.#bin.push(...Array.from(chunk));
 				if (this.#bin.length >= 2) {
 					try {
 						controller.enqueue(this.#base16Decoder.decodeToBytes(Uint8Array.from(this.#bin.splice(0, Math.floor(this.#bin.length / 2) * 2))));
@@ -112,9 +112,9 @@ export class Base16EncoderStream extends TransformStream<Uint8Array, Uint8Array>
 	 */
 	constructor() {
 		super({
-			transform: (chunkStream: Uint8Array, controller: TransformStreamDefaultController<Uint8Array>): void => {
+			transform: (chunk: Uint8Array, controller: TransformStreamDefaultController<Uint8Array>): void => {
 				try {
-					controller.enqueue(this.#base16Encoder.encodeToBytes(chunkStream));
+					controller.enqueue(this.#base16Encoder.encodeToBytes(chunk));
 				} catch (error) {
 					controller.error(error);
 				}
