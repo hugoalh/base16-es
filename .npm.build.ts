@@ -28,10 +28,6 @@ await invokeDenoNodeJSTransformer({
 			type: "git",
 			url: "git+https://github.com/hugoalh/base16-es.git"
 		},
-		scripts: {
-		},
-		engines: {
-		},
 		private: false,
 		publishConfig: {
 			access: "public"
