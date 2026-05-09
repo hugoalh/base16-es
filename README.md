@@ -4,8 +4,8 @@
 
 🔗
 [GitHub](https://github.com/hugoalh/base16-es)
-[JSR](https://jsr.io/@hugoalh/base16)
-[NPM](https://www.npmjs.com/package/@hugoalh/base16)
+● [JSR](https://jsr.io/@hugoalh/base16)
+● [NPM](https://www.npmjs.com/package/@hugoalh/base16)
 
 An ECMAScript module for Base16 encode and decode.
 
