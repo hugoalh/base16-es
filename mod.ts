@@ -20,13 +20,11 @@ export class Base16Decoder {
 		) {
 			throw new Error(`Encoded data does not exclusively consist of an even number of hexadecimal characters!`);
 		}
-		const bin: string[] = [];
+		const result: number[] = [];
 		for (let index: number = 0; index < itemFmt.length; index += 2) {
-			bin.push(itemFmt.slice(index, index + 2));
+			result.push(Number.parseInt(itemFmt.slice(index, index + 2), 16));
 		}
-		return Uint8Array.from(bin.map((value: string): number => {
-			return Number.parseInt(value, 16);
-		}));
+		return Uint8Array.from(result);
 	}
 	/**
 	 * Decode from Base16 to text.
