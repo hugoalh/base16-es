@@ -1,3 +1,11 @@
+if (typeof Uint8Array.fromHex === "undefined") {
+	//deno-lint-ignore hugoalh/no-import-dynamic -- Polyfill.
+	await import("npm:es-arraybuffer-base64@^1.1.2/Uint8Array.fromHex/auto");
+}
+if (typeof Uint8Array.prototype.toHex === "undefined") {
+	//deno-lint-ignore hugoalh/no-import-dynamic -- Polyfill.
+	await import("npm:es-arraybuffer-base64@^1.1.2/Uint8Array.prototype.toHex/auto");
+}
 /**
  * Base16 decoder.
  */
@@ -12,19 +20,7 @@ export class Base16Decoder {
 	 */
 	decodeToBytes(item: string | Uint8Array): Uint8Array {
 		const itemFmt: string = (typeof item === "string") ? item : new TextDecoder().decode(item);
-		if (
-			itemFmt.length % 2 !== 0 ||
-			!itemFmt.toUpperCase().split("").every((character: string): boolean => {
-				return "0123456789ABCDEF".includes(character);
-			})
-		) {
-			throw new Error(`Encoded data does not exclusively consist of an even number of hexadecimal characters!`);
-		}
-		const result: number[] = [];
-		for (let index: number = 0; index < itemFmt.length; index += 2) {
-			result.push(Number.parseInt(itemFmt.slice(index, index + 2), 16));
-		}
-		return Uint8Array.from(result);
+		return Uint8Array.fromHex(itemFmt);
 	}
 	/**
 	 * Decode from Base16 to text.
@@ -57,9 +53,7 @@ export class Base16Encoder {
 	 */
 	encodeToText(item: string | Uint8Array): string {
 		const itemFmt: Uint8Array = (typeof item === "string") ? new TextEncoder().encode(item) : item;
-		return Array.from(itemFmt, (byte: number): string => {
-			return byte.toString(16).toUpperCase().padStart(2, "0");
-		}).join("");
+		return itemFmt.toHex().toUpperCase();
 	}
 }
 /**
